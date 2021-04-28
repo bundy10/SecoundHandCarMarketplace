@@ -1,12 +1,18 @@
 class CarsController < ApplicationController
   def new
+    @car = Car.new
+    @user = current_user
   end
 
   def create
-    @cars = Car.all
-    @car = Car.new
-    if params[:query].present?
-      @songs = Car.global_search(params[:query])
+    @car = Car.new(car_params)
+    @car.state = "available"
+    @car.user = current_user
+
+    if @car.save
+      redirect_to car_url(@car)
+    else
+      render :new
     end
   end
 
